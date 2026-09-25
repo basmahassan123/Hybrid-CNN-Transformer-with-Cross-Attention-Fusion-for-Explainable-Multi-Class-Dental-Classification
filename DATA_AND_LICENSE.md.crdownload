@@ -1,0 +1,41 @@
+# Data and License Information
+
+## Third-party dataset
+
+The research uses the Oral Diseases dataset hosted at:
+
+https://www.kaggle.com/datasets/salmansajid05/oral-diseases
+
+## License status
+
+**Dataset license: UNKNOWN / NOT ESTABLISHED BY THE AUTHORS**
+
+This repository intentionally does not assign or infer a license for the dataset.
+
+No statement in this repository should be interpreted as claiming that the dataset or its photographs are licensed under CC BY 4.0 or another open license.
+
+## Repository policy
+
+The repository distributes the research implementation and documentation, not the original third-party dataset.
+
+Original dataset images and archives must not be committed to GitHub.
+
+## Image reproduction
+
+Because the applicable license and image-reproduction permission are not established, original dataset photographs should not be included in repository assets or manuscript figures unless the authors have an independent lawful basis for reproduction.
+
+If permission is unavailable, replace the photographs with original/reproducible figures.
+
+## Kaggle Terms
+
+Kaggle's Terms of Use state that users must not use, copy, reproduce, publish, distribute, or otherwise exploit content they do not own without the owner's consent or another lawful basis.
+
+Accordingly, public access to the Kaggle page is not treated here as a blanket image-reproduction license.
+
+## Recommended wording for the repository
+
+> The dataset used in this research is a third-party dataset hosted on Kaggle. Its applicable license and image-redistribution terms are not established by the authors. The original dataset is therefore not redistributed in this repository. Users wishing to reproduce the experiments must obtain the dataset independently from the original source and comply with the rights and terms applicable to that dataset.
+
+## Recommended wording for the manuscript
+
+> The dataset used in this study is a third-party dataset publicly hosted on Kaggle and is available from the original source at https://www.kaggle.com/datasets/salmansajid05/oral-diseases. The dataset is not redistributed with this repository because its applicable licensing and image-redistribution terms are not established by the authors. The implementation and supporting experimental documentation are available in the authors' repository.

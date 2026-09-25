@@ -1,0 +1,172 @@
+# Reproducibility Guide
+
+## 1. Main implementation
+
+The main implementation is:
+
+`code1.ipynb`
+
+The notebook contains the data preparation, model construction, training, evaluation, explainability, uncertainty, out-of-distribution, and ablation workflows.
+
+## 2. Environment
+
+The notebook records:
+
+- TensorFlow 2.19.0
+- Keras 3.15.1
+- KerasHub 0.31.0
+- Transformers 4.52.4
+- NumPy 1.26.4
+- vit-keras 0.1.0
+
+The notebook does not consistently record exact versions for every imported package, so unverified versions are not inserted into the documentation.
+
+## 3. Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+Launch:
+
+```bash
+jupyter notebook
+```
+
+Then open `code1.ipynb`.
+
+## 4. Dataset
+
+Obtain the Oral Diseases dataset independently from:
+
+https://www.kaggle.com/datasets/salmansajid05/oral-diseases
+
+The repository does not redistribute the original images.
+
+## 5. Dataset preparation
+
+The notebook:
+
+1. Reads the six class directories.
+2. Collects supported image extensions.
+3. Removes duplicate file paths.
+4. Performs a stratified 70/15/15 train/validation/test split.
+5. Checks partition overlap.
+6. Saves split CSV files and a class-distribution table.
+7. Creates TensorFlow datasets.
+
+The final reviewer-oriented run reports 7,534 training, 1,615 validation, and 1,615 test images.
+
+## 6. Image pipeline
+
+The main TensorFlow pipeline uses:
+
+- 224 × 224 RGB images
+- batch size 16
+- scaling by 1/255
+- training-only horizontal flip
+- rotation 0.1
+- zoom 0.1
+- contrast 0.1
+- prefetching with `tf.data.AUTOTUNE`
+
+## 7. Reproducibility controls
+
+The notebook uses:
+
+```text
+RANDOM_STATE = 42
+SEED = 42
+```
+
+It also seeds Python's `random`, NumPy, and TensorFlow and attempts to enable TensorFlow deterministic operations.
+
+## 8. Hybrid architecture
+
+### CNN branch
+MobileNetV2 is loaded with ImageNet weights and used for convolutional feature extraction.
+
+### Transformer branch
+The notebook loads:
+
+`google/vit-base-patch16-224`
+
+through Hugging Face Transformers.
+
+### Cross-attention
+The final cross-attention model projects the representations to 512 dimensions and uses:
+
+- 8 attention heads
+- key dimension 64
+- attention dropout 0.10
+
+The CNN-to-ViT direction uses the MobileNet representation as query and ViT tokens as key/value.
+
+The ViT-to-CNN direction uses the ViT CLS representation as query and the CNN representation as key/value.
+
+The resulting representations are concatenated, globally pooled, and passed to the classifier.
+
+## 9. Training configuration
+
+The final reviewer-oriented configuration records:
+
+- learning rate: 1e-4
+- weight decay: 1e-4
+- maximum epochs: 50
+- minimum epochs: 10
+- early stopping patience: 5
+- learning-rate patience: 2
+- classifier dropout: 0.30
+- attention dropout: 0.10
+
+## 10. Reported cross-attention results
+
+The final reviewer-oriented run reports:
+
+- best validation accuracy: 90.2167%
+- best epoch: 19
+- test accuracy: 88.24%
+- macro F1: 87.74%
+- weighted F1: 88.30%
+
+Per-class F1:
+
+- Calculus: 73.30%
+- Caries-Gingivitis: 82.67%
+- Gingivitis: 77.49%
+- Hypodontia: 97.40%
+- Mouth Ulcer: 98.29%
+- Tooth Discoloration: 97.30%
+
+## 11. Ablation
+
+The notebook contains model comparisons involving MobileNetV2, ViT-B/16, direct concatenation, standard self-attention, and bidirectional cross-attention.
+
+The final two-model ablation reports 88.36% test accuracy for standard self-attention and 88.24% for bidirectional cross-attention.
+
+## 12. Explainability and reliability
+
+The notebook contains implementations/analyses for:
+
+- Grad-CAM
+- Vision Transformer attention rollout
+- Monte Carlo dropout
+- out-of-distribution assessment
+
+These analyses describe model behavior and reliability; they do not establish clinical validity.
+
+## 13. Dataset rights
+
+The dataset is third-party and is not redistributed. Reproduction of original photographs in publications requires appropriate rights.
+
+## 14. Recommended final environment capture
+
+For a future archival environment, run:
+
+```bash
+python --version
+pip freeze
+```
+
+and preserve the output with the repository release.
+

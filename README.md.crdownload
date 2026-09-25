@@ -1,0 +1,234 @@
+# Hybrid Convolutional Neural Network–Transformer with Cross-Attention Fusion for Explainable Multi-Class Dental Disease Classification
+
+## Overview
+
+This repository contains the TensorFlow/Keras implementation and reproducibility documentation for a six-class dental image classification study.
+
+The implementation combines:
+
+- **MobileNetV2** initialized with ImageNet weights for convolutional visual representations.
+- **Vision Transformer (ViT-B/16)** using `google/vit-base-patch16-224` through Hugging Face Transformers.
+- **Bidirectional cross-attention fusion**, in which a projected MobileNet representation queries ViT tokens and a projected ViT CLS representation queries the MobileNet representation.
+- A fusion/classification head with dense projection, batch normalization, dropout, and softmax classification.
+
+The notebook also contains baseline and ablation experiments involving MobileNetV2, ViT-B/16, direct concatenation, standard self-attention, and bidirectional cross-attention, together with classification, ROC/AUC, confusion-matrix, Grad-CAM, attention-rollout, uncertainty, and out-of-distribution analyses.
+
+## Main implementation
+
+The main research implementation is:
+
+`code1.ipynb`
+
+The notebook contains the dataset preparation, stratified splitting, TensorFlow data pipeline, model construction, training, evaluation, explainability analyses, and reviewer-oriented ablation experiments.
+
+## Dataset
+
+The study uses the third-party **Oral Diseases** dataset hosted on Kaggle:
+
+https://www.kaggle.com/datasets/salmansajid05/oral-diseases
+
+The six class labels used by the implementation are:
+
+1. Calculus
+2. Caries-Gingivitis
+3. Gingivitis
+4. Hypodontia
+5. Mouth Ulcer
+6. Tooth Discoloration
+
+The original dataset is **not included** in this repository.
+
+### Dataset license status
+
+The Kaggle dataset page is not being treated as providing an open redistribution license for the original images. The applicable dataset license is therefore recorded here as **Unknown / not established by the authors**.
+
+No CC BY, CC BY-SA, CC0, MIT, Apache, or other open license is claimed for the dataset.
+
+This distinction is important: public availability on Kaggle does not by itself establish that the authors of this research may redistribute the original photographs.
+
+See:
+
+- `DATASET.md`
+- `docs/DATA_AND_LICENSE.md`
+
+
+
+
+## Dataset partitioning
+
+The notebook performs a stratified:
+
+- 70% training split
+- 15% validation split
+- 15% test split
+
+The random state is 42.
+
+The notebook explicitly checks for overlap between the resulting partitions.
+
+The final reviewer-oriented notebook outputs show:
+
+- Training: 7,534 images
+- Validation: 1,615 images
+- Test: 1,615 images
+- Total: 10,764 images
+
+## Image preprocessing and augmentation
+
+The main TensorFlow data pipeline uses:
+
+- image size: `224 × 224 × 3`
+- batch size: `16`
+- pixel scaling to `[0, 1]`
+- training-only random horizontal flip
+- random rotation: `0.1`
+- random zoom: `0.1`
+- random contrast: `0.1`
+- TensorFlow `tf.data` batching and prefetching
+
+## Proposed cross-attention model
+
+The final reviewer-oriented cross-attention implementation uses:
+
+- projection dimension: 512
+- 8 attention heads
+- attention key dimension: 64
+- attention dropout: 0.10
+- classifier dropout: 0.30
+- learning rate: `1e-4`
+- weight decay: `1e-4`
+- maximum epochs: 50
+- minimum epochs: 10
+- early-stopping patience: 5
+- learning-rate reduction patience: 2
+
+The CNN-to-ViT direction uses the projected MobileNet representation as the query and the complete projected ViT token sequence as key/value.
+
+The ViT-to-CNN direction uses the projected ViT CLS representation as query and the projected MobileNet representation as key/value.
+
+The two direction-specific representations are concatenated and globally pooled before classification.
+
+## Reported final cross-attention results
+
+The final reviewer-oriented notebook run reports:
+
+- Best validation accuracy: **90.2167%**
+- Best epoch: **19**
+- Test accuracy: **88.24%**
+- Macro F1-score: **87.74%**
+- Weighted F1-score: **88.30%**
+
+Per-class F1-scores in that run were:
+
+| Class | F1-score |
+|---|---:|
+| Calculus | 73.30% |
+| Caries-Gingivitis | 82.67% |
+| Gingivitis | 77.49% |
+| Hypodontia | 97.40% |
+| Mouth Ulcer | 98.29% |
+| Tooth Discoloration | 97.30% |
+
+The strongest per-class F1 values in the reported cross-attention test run were obtained for Mouth Ulcer and Hypodontia.
+
+## Ablation experiments
+
+The notebook also evaluates:
+
+1. MobileNetV2
+2. ViT-B/16
+3. Direct Concatenation
+4. Standard Self-Attention
+5. Bidirectional Cross-Attention
+
+The final two-model ablation output reported standard self-attention test accuracy of 88.36%, while the bidirectional cross-attention model reported 88.24%.
+
+These values are reported experimental results and should not be presented as evidence that one mechanism is universally superior.
+
+## Environment captured in the notebook
+
+The notebook outputs document the following environment versions:
+
+- TensorFlow: **2.19.0**
+- KerasHub: **0.31.0**
+- Keras: **3.15.1**
+- Transformers: **4.52.4**
+- NumPy: **1.26.4**
+- vit-keras: **0.1.0**
+
+Other package versions were not consistently captured in the notebook outputs and are therefore not invented in `requirements.txt`.
+
+## Installation
+
+Create a clean Python environment and install:
+
+```bash
+pip install -r requirements.txt
+```
+
+Then launch Jupyter:
+
+```bash
+jupyter notebook
+```
+
+Open `code1.ipynb` and execute the notebook in the intended sequence.
+
+The notebook contains package-install cells; for a clean repository workflow, dependency installation should preferably be performed from `requirements.txt` before executing the notebook.
+
+## Local dataset path
+
+The original notebook uses local Windows paths. These paths are machine-specific and must be changed by each user.
+
+Do not commit absolute local paths containing personal directory structures if the repository is intended for public release.
+
+## Reproducibility and limitations
+
+Exact reproduction can depend on:
+
+- TensorFlow/Keras and Transformers versions
+- Python version
+- GPU/CPU hardware
+- CUDA/cuDNN configuration
+- random seeds
+- pretrained-model availability
+- dataset version and organization
+- local image files
+
+The notebook sets random seeds to 42 and attempts to enable TensorFlow deterministic operations.
+
+The dataset itself is not redistributed, so reproduction requires independent lawful access to the original source.
+
+## Repository structure
+
+```text
+.
+├── README.md
+├── requirements.txt
+├── DATASET.md
+├── REPRODUCIBILITY.md
+├── CITATION.cff
+├── code1.ipynb
+├── docs/
+│   └── DATA_AND_LICENSE.md
+├── src/
+│   └── README.md
+└── outputs/
+    └── README.md
+```
+
+## Citation
+
+Please cite the associated research article and the original dataset source.
+
+Citation metadata are provided in `CITATION.cff`.
+
+## Code license
+
+No separate open-source license has been assigned to the research code in this repository at this stage.
+
+The absence of a code license does not grant permission to redistribute the code beyond rights provided by applicable law.
+
+## Contact
+
+Dr. Basma M. Hassan

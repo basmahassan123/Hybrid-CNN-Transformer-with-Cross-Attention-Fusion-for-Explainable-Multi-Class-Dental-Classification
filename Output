@@ -1,1 +1,30 @@
+# Outputs
+
+This directory is reserved for generated research outputs.
+
+The notebook generates or references outputs including:
+
+- dataset-distribution CSV files;
+- train/validation/test split CSV files;
+- model checkpoints;
+- training-history plots;
+- confusion matrices;
+- ROC/AUC plots;
+- classification reports;
+- Grad-CAM visualizations;
+- Vision Transformer attention visualizations;
+- uncertainty outputs;
+- out-of-distribution analysis;
+- ablation CSV/XLSX files.
+
+Examples of reviewer-oriented output names appearing in the notebook include:
+
+- `Ablation_Results.csv`
+- `Per_Class_F1.csv`
+- `Ablation_Complete.xlsx`
+- `R_Accuracy.png`
+- `F1.png`
+- `AUC.png`
+- `Per_Class_F1.png`
+
 

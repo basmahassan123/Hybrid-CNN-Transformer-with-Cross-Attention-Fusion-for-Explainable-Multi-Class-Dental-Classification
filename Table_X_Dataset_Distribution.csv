@@ -1,0 +1,8 @@
+Class ID,Class,Original Samples,Training Samples,Validation Samples,Test Samples,Total After Split
+0,Calculus,1296,907,194,195,1296
+1,Caries-Gingivitis,1493,1045,224,224,1493
+2,Gingivitis,2349,1644,353,352,2349
+3,Hypodontia,1251,876,187,188,1251
+4,Mouth Ulcer,2541,1778,382,381,2541
+5,Tooth Discoloration,1834,1284,275,275,1834
+,Total,10764,7534,1615,1615,10764
